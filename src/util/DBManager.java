@@ -1,24 +1,25 @@
-package uti;
-
-//ì»¤ë„¥ì…˜ ê°ì²´ë¥¼ ì–»ê³  ì‚¬ìš©ì´ ëë‚œ ë¦¬ì†ŒìŠ¤ í•´ì œí•˜ëŠ” í´ë˜ìŠ¤
-
+package util;
 import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.Statement;
 import java.sql.ResultSet;
 
+//Connection°´Ã¼¸¦ ¾ò°í, »ç¿ëÀÌ ³¡³­ ¸®¼Ò½º¸¦ ÇØÁ¦ÇÏ´Â Å¬·¡½º.
 import javax.naming.Context;
 import javax.naming.InitialContext;
-import javax.sql.DataSource;
+
+import org.apache.tomcat.jdbc.pool.DataSource;
+
+import com.mysql.jdbc.Statement;
 
 public class DBManager {
 	
-	public static Connection getConncetion() {
+	public static Connection getConnection() {
 		Connection conn = null;
 		try {
 			Context initContext = new InitialContext();
-			Context envContext = (Context) initContext.lookup("java:/comp/env");
-			DataSource ds = (DataSource) envContext.lookup("jdbc/study"); //"jdbc/study"ì´ë€ ì´ë¦„ì„ ê°ì²´ë¥¼ ì°¾ì•„ì„œ dsê°€ ë°›ìŒ
+			Context envContext = (Context)initContext.lookup("java:/comp/env");
+			//jdbc/myoracleÀÌ¶õ °´Ã¼¸¦ Ã£¾Æ¼­ ds°¡ ¹ŞÀ½.
+			DataSource ds = (DataSource) envContext.lookup("jdbc/myoracle");
+			//»ı¼ºµÈ ds·Î Connection°´Ã¼ ¹ŞÀ½.
 			conn = ds.getConnection();
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -26,22 +27,21 @@ public class DBManager {
 		return conn;
 	}
 	
-	//selectë¬¸ ìˆ˜í–‰ í›„ ë¦¬ì†ŒìŠ¤ í•´ì œë¥¼ ìœ„í•œ ë©”ì†Œë“œ.
+	//selec¹® ½ÇÇà ÈÄ ¸®¼Ò½º ÇØÁ¦¸¦ À§ÇÑ ¸Ş¼Òµå.
 	public static void close(Connection conn, Statement stmt, ResultSet rs) {
 		try {
 			rs.close();
 			stmt.close();
-			conn.close();
+			rs.close();
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
-	//insert update delete ìˆ˜í–‰ í›„ ë¦¬ì†ŒìŠ¤ í•´ì œë¥¼ ìœ„í•œ ë©”ì†Œë“œ.
 	public static void close(Connection conn, Statement stmt) {
 		try {
-			stmt.close();
 			conn.close();
+			stmt.close();
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
